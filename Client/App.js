@@ -7,6 +7,7 @@ import  HomePage  from "./Pages/homePage";
 import  FeedPage  from "./Pages/feedPage";
 import WardrobePage from './Pages/wardrobePage';
 
+
 const tab = createBottomTabNavigator();
 export default function App() {
   return (
