@@ -1,0 +1,1 @@
+dbKey = "postgres://Makiv1:mcOK1H2PCWYk@ep-polished-glitter-56594523.us-west-2.aws.neon.tech/fitcheckDB"
