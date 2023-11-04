@@ -1,15 +1,30 @@
+import React, { useState } from 'react';
 import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import  AddClothingScreen  from './addClothingScreen';
 
-export default function WardrobePage() {
+const Stack = createNativeStackNavigator();
+
+export default function WardrobePage({navigation}) {
+    const [isPopupVisible, setPopupVisible] = useState(false);
+
+    const togglePopup = () => {
+        setPopupVisible(!isPopupVisible);
+    };
+
+
     return (
+        
         <View>
             <Text>This is whee the wardrobe will be</Text>
             <View style={styles.container}>
-                <TouchableOpacity style={styles.button}>
-                    <Text style={styles.buttonText}>+</Text>
-                </TouchableOpacity>
+
+                    <TouchableOpacity style={styles.button} onPress={togglePopup}>
+                        <Text style={styles.buttonText}>+</Text>
+                    </TouchableOpacity>
+                    <AddClothingScreen visible={isPopupVisible} onRequestClose={togglePopup} />
+    
             </View>
         </View>
     )
