@@ -22,6 +22,8 @@ const Row = ({children}) => {
 }
 
 export default function FeedPage() {
+    
+/* stuff for connecting to back end, not ready yet 
     [isLoading, setLoading] = useState(true);
     [posts, setPosts] = useState();
 
@@ -35,13 +37,12 @@ export default function FeedPage() {
             }
         )
     },[]);
-
     while(isLoading) return (
         <View style={{justifyContent:"center", alignItems:"center"}}>
             <ActivityIndicator/>
         </View>
     );
-
+ */
     return (
         <SafeAreaView style ={styles.container}>
             <ScrollView contentContainerStyle = {styles.scrollView}>
