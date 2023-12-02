@@ -29,8 +29,19 @@ export default function AddClothingScreen({ visible, onRequestClose }) {
     }
 
     const openLib = async() => {
-        const result = await launchImageLibrary();
-        setImgUrl(result?.assets[0]?.uri);
+        try {await ImagePicker.requestMediaLibraryPermissionsAsync();
+            let result = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                aspect: [1,1],
+                quality: 1,
+            });
+
+            if (!result.canceled){
+                await saveImage(result.assets[0].uri)
+            }
+        } catch (error) {
+
+        }
     }
 
 
@@ -79,7 +90,7 @@ export default function AddClothingScreen({ visible, onRequestClose }) {
                         onRequestClose={closeOptions}
                     >
                         <View style={styles.optionsView}>
-                            <TouchableOpacity style={styles.optionButton} onPress = {openLib}>
+                            <TouchableOpacity style={styles.optionButton} onPress = {() => openLib()}>
                                 <Text style={styles.optionButtonText}>Choose from library</Text>
                             </TouchableOpacity>
                             <TouchableOpacity style={styles.optionButton} onPress = {() => openCamera()}>
