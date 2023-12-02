@@ -1,49 +1,58 @@
-import { Text, View, Modal, StyleSheet, TouchableOpacity, Icon, Image } from "react-native";
 import React, { useState } from 'react';
+import { Text, View, Modal, StyleSheet, TouchableOpacity, Image, TextInput, ScrollView, KeyboardAvoidingView, Platform } from "react-native";
 import * as ImagePicker from "expo-image-picker";
+import Tags from "react-native-tags";
 import placeholderImage from "../assets/photoPlaceholder.png";
 
 
 export default function AddClothingScreen({ visible, onRequestClose }) {
 
     const [showOptions, setShowOptions] = useState(false);
-
     const [image, setImage] = useState(placeholderImage);
+    const [name, setName] = useState("");
+    const [description, setDescription] = useState("");
+    const [tags, setTags] = useState([]);
 
 
-    const openCamera = async() => {
-        try{
+   
+
+
+
+    const openCamera = async () => {
+        try {
             await ImagePicker.requestCameraPermissionsAsync();
             let result = await ImagePicker.launchCameraAsync({
                 cameraType: ImagePicker.CameraType.back,
-                aspect: [1,1],
+                allowsEditing: true,
+                aspect: [1, 1],
                 quality: 1,
             });
 
-            if (!result.canceled){
-                await saveImage(result.assets[0].uri)
-            }
-        } catch (error){
-
-        }
-    }
-
-    const openLib = async() => {
-        try {await ImagePicker.requestMediaLibraryPermissionsAsync();
-            let result = await ImagePicker.launchImageLibraryAsync({
-                mediaTypes: ImagePicker.MediaTypeOptions.Images,
-                aspect: [1,1],
-                quality: 1,
-            });
-
-            if (!result.canceled){
-                await saveImage(result.assets[0].uri)
+            if (!result.canceled) {
+                await saveImage(result.assets[0].uri);
             }
         } catch (error) {
-
+            // Handle error
         }
     }
 
+    const openLib = async () => {
+        try {
+            await ImagePicker.requestMediaLibraryPermissionsAsync();
+            let result = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                aspect: [1, 1],
+                allowsEditing: true,
+                quality: 1,
+            });
+
+            if (!result.canceled) {
+                await saveImage(result.assets[0].uri);
+            }
+        } catch (error) {
+            // Handle error
+        }
+    }
 
     const openOptions = () => {
         setShowOptions(true);
@@ -53,16 +62,26 @@ export default function AddClothingScreen({ visible, onRequestClose }) {
         setShowOptions(false);
     };
 
-    const saveImage = async(image) => {
-        try{
-            setImage({ uri :image});
+    const saveImage = async (imageUri) => {
+        try {
+            setImage({ uri: imageUri });
             closeOptions();
-
-        } catch (error){
-            throw error;
+        } catch (error) {
+            // Handle error
         }
+    }
 
+    const saveClothingItem = () => {
 
+        onRequestClose();
+    }
+
+    const closeModal = () => {
+        setImage(placeholderImage); 
+        setName("");
+        setDescription("");
+        setTags("");
+        onRequestClose(); 
     }
 
     return (
@@ -73,42 +92,96 @@ export default function AddClothingScreen({ visible, onRequestClose }) {
                 visible={visible}
                 onRequestClose={onRequestClose}
             >
-                <View style={styles.mainView}>
-                    <TouchableOpacity style={styles.button} onPress={() => {setImage(placeholderImage); onRequestClose();}}>
-                        <Text style={styles.buttonText}>x</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity style={styles.addPhotoContainer} onPress={openOptions}>
-                        <Image resizeMode="cover" style = {styles.img} source={image} />
-                    </TouchableOpacity>
-
-                    {/* Options popup */}
-                    <Modal
-                        animationType="slide"
-                        transparent={true}
-                        visible={showOptions}
-                        onRequestClose={closeOptions}
+                <KeyboardAvoidingView
+                    behavior={Platform.OS === "ios" ? "padding" : "height"}
+                    style={styles.keyboardAvoidingView}
+                >
+                    <ScrollView
+                        contentContainerStyle={styles.mainView}
+                        keyboardShouldPersistTaps="handled"
                     >
-                        <View style={styles.optionsView}>
-                            <TouchableOpacity style={styles.optionButton} onPress = {() => openLib()}>
-                                <Text style={styles.optionButtonText}>Choose from library</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={styles.optionButton} onPress = {() => openCamera()}>
-                                <Text style={styles.optionButtonText}>Capture using camera</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={styles.optionButton} onPress={closeOptions}>
-                                <Text style={styles.optionButtonText}>Cancel</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </Modal>
-                </View>
+                        <TouchableOpacity style={styles.button} onPress={closeModal}>
+                            <Text style={styles.buttonText}>x</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity style={styles.addPhotoContainer} onPress={openOptions}>
+                            <Image resizeMode="cover" style={styles.img} source={image} />
+                        </TouchableOpacity>
+
+                        <TextInput
+                            style={styles.inputName}
+                            placeholder="Name"
+                            placeholderTextColor={"#6bd199"}
+                            value={name}
+                            onChangeText={(text) => setName(text)}
+        
+                        />
+                        <TextInput
+                            style={styles.inputDesc}
+                            placeholder="Description"
+                            placeholderTextColor={"#6bd199"}
+                            value={description}
+                            onChangeText={(text) => setDescription(text)}
+                            multiline
+                        />
+                        <Tags
+
+                            textInputProps={{
+                                placeholder: "Tags to categorize"
+                            }}
+                        
+                            maxNumberOfTags={4}
+                            onTagPress={() => {}}
+                            containerStyle={{ 
+                                justifyContent: "center",
+                                marginTop: 10,
+                                width: "80%",
+                                height: 60,
+                            }}
+                            inputStyle={{ backgroundColor: "#99f2c1", borderRadius: 4, margin: 0, padding: 0,}}
+                            renderTag={({ tag, index, onPress, deleteTagOnPress, readonly }) => (
+                                <TouchableOpacity key={`${tag}-${index}`} onPress={onPress} style={styles.tag}>
+                                    <Text style = {styles.tagText}>{tag}</Text>
+                                </TouchableOpacity>
+                            )}
+                        />
+                        
+
+                        <TouchableOpacity style={styles.saveButton} onPress={saveClothingItem}>
+                            <Text style={styles.saveButtonText}>Save</Text>
+                        </TouchableOpacity>
+
+                        {/* Options popup */}
+                        <Modal
+                            animationType="slide"
+                            transparent={true}
+                            visible={showOptions}
+                            onRequestClose={closeOptions}
+                        >
+                            <View style={styles.optionsView}>
+                                <TouchableOpacity style={styles.optionButton} onPress={() => openLib()}>
+                                    <Text style={styles.optionButtonText}>Choose from library</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity style={styles.optionButton} onPress={() => openCamera()}>
+                                    <Text style={styles.optionButtonText}>Capture using camera</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity style={styles.optionButton} onPress={closeOptions}>
+                                    <Text style={styles.optionButtonText}>Cancel</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </Modal>
+                    </ScrollView>
+                </KeyboardAvoidingView>
             </Modal>
         </View>
     );
 }
 
 const styles = StyleSheet.create({
-    mainView:{
+    keyboardAvoidingView: {
+        flex: 1,
+    },
+    mainView: {
         marginTop: "10%",
         height: "90%",
         width: "100%",
@@ -116,15 +189,14 @@ const styles = StyleSheet.create({
         borderTopEndRadius: 20,
         flex: 1,
         alignItems: "center"
-
     },
     button: {
         marginTop: "2%",
         marginLeft: "88%",
         width: 25,
         height: 25,
-        borderRadius: 40, 
-        backgroundColor: '#99f2c1', 
+        borderRadius: 40,
+        backgroundColor: '#99f2c1',
         justifyContent: 'center',
         alignItems: 'center',
     },
@@ -136,19 +208,64 @@ const styles = StyleSheet.create({
     },
     addPhotoContainer: {
         marginTop: 20,
-        width: "50%",
+        width: "60%",
         height: "30%",
         borderRadius: 4,
         justifyContent: "center",
         alignItems: "center",
         backgroundColor: "#cadbd2"
     },
-    img:
-        {
+    img: {
         width: "100%",
         height: "100%",
         alignSelf: "center",
-        borderRadius: 2,
+        borderRadius: 4,
+    },
+    inputName: {
+        marginTop: 15,
+        width: "80%",
+        height: 30,
+        borderRadius: 4,
+        borderWidth: 1,
+        borderColor: "#99f2c1",
+        paddingHorizontal: 10,
+        textAlign: "center",
+    },
+    inputDesc: {
+        marginTop: 10,
+        width: "80%",
+        height: 60,
+        borderRadius: 4,
+        borderWidth: 1,
+        borderColor: "#99f2c1",
+        paddingHorizontal: 10,
+        textAlign: "center",
+    },
+
+    tag: {
+        backgroundColor: '#99f2c1',
+        padding: 8,
+        borderRadius: 8,
+        marginVertical: 4,
+        marginRight: 8,
+    },
+    tagText: {
+        color: 'white',
+    },
+
+
+    saveButton: {
+        marginTop: 20,
+        width: "80%",
+        height: 40,
+        borderRadius: 4,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "#99f2c1",
+    },
+    saveButtonText: {
+        fontSize: 16,
+        color: "white",
     },
     optionsView: {
         marginTop: "60%",
@@ -173,4 +290,4 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: "white",
     },
-})
+});
