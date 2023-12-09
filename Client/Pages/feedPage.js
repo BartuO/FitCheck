@@ -27,17 +27,18 @@ export default function FeedPage() {
     [isLoading, setLoading] = useState(true);
     [posts, setPosts] = useState();
 
+    console.log(photoo);
+/*     
     useEffect(()=>{
         fetch("/posts").then(
-            response => response.json()
-        ).then(
             data => {
                 setPosts(data);
                 setLoading(false);
             }
         )
     },[]);
-    while(isLoading) return (
+ */
+/*     while(isLoading) return (
         <View style={{justifyContent:"center", alignItems:"center"}}>
             <ActivityIndicator/>
         </View>
@@ -47,16 +48,16 @@ export default function FeedPage() {
         <SafeAreaView style ={styles.container}>
             <ScrollView contentContainerStyle = {styles.scrollView}>
                 <Row>
-                    <Listing title="Big steppington ricks" price={10000} photo={photoo}/>
-                    <Listing title="Big steppington ricks" price={5} photo={photoo}/>
+                    <Listing title="Big stepper ricks" price={10000} photo={photoo}/>
+                    <Listing title="Big stepper ricks" price={5.00} photo={photoo}/>
                 </Row>
                 <Row>
-                    <Listing title="Big steppington ricks" price={5} photo={photoo}/>
-                    <Listing title="Big steppington ricks" price={5} photo={photoo}/>
+                    <Listing title="Big stepper ricks" price={5.34} photo={photoo}/>
+                    <Listing title="Big stepper ricks" price={5} photo={photoo}/>
                 </Row>
                 <Row>
-                    <Listing title="Big steppington ricks" price={5} photo={photoo}/>
-                    <Listing title="Big steppington ricks" price={5} photo={photoo}/>
+                    <Listing title="Big stepper ricks" price={5} photo={photoo}/>
+                    <Listing title="Big stepper ricks" price={5} photo={photoo}/>
                 </Row>
             </ScrollView>
         </SafeAreaView>
