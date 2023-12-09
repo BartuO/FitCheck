@@ -17,7 +17,7 @@ export default function WardrobePage({navigation}) {
     return (
         
         <View>
-            <Text>This is whee the wardrobe will be</Text>
+            <Text>This is where the wardrobe will be</Text>
             <View style={styles.container}>
 
                     <TouchableOpacity style={styles.button} onPress={togglePopup}>
