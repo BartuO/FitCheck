@@ -7,14 +7,13 @@ import placeholderImage from "../assets/photoPlaceholder.png";
 
 export default function AddClothingScreen({ visible, onRequestClose }) {
 
+
     const [showOptions, setShowOptions] = useState(false);
     const [image, setImage] = useState(placeholderImage);
+    const [imageBase64, setBase64] = useState();
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
     const [tags, setTags] = useState([]);
-
-
-   
 
 
 
@@ -26,10 +25,12 @@ export default function AddClothingScreen({ visible, onRequestClose }) {
                 allowsEditing: true,
                 aspect: [1, 1],
                 quality: 1,
+                base64: true,
             });
 
             if (!result.canceled) {
-                await saveImage(result.assets[0].uri);
+            await saveImage(result.assets[0].uri, result.assets[0].base64);
+            console.log(res.assets[0])
             }
         } catch (error) {
             // Handle error
@@ -44,10 +45,11 @@ export default function AddClothingScreen({ visible, onRequestClose }) {
                 aspect: [1, 1],
                 allowsEditing: true,
                 quality: 1,
+                base64: true,
             });
 
             if (!result.canceled) {
-                await saveImage(result.assets[0].uri);
+                await saveImage(result.assets[0].uri, result.assets[0].base64);
             }
         } catch (error) {
             // Handle error
@@ -62,17 +64,28 @@ export default function AddClothingScreen({ visible, onRequestClose }) {
         setShowOptions(false);
     };
 
-    const saveImage = async (imageUri) => {
+    const saveImage = async (imageUri, base64) => {
         try {
             setImage({ uri: imageUri });
+            setBase64(base64);
             closeOptions();
         } catch (error) {
             // Handle error
         }
     }
 
-    const saveClothingItem = () => {
+    const saveClothingItem = async () => {
+        const o = {"img": imageBase64};
+        let obj = JSON.stringify(o);
 
+        try {
+        //await fetch("http://10.0.0.97:5000/test");
+        await fetch("http://10.0.0.97:5000/addClothing", {
+                method: 'POST',
+                headers: { 'Content-Type' : 'application/json'},
+                body: obj, 
+            });
+        } catch (e) {console.log(e)}
         onRequestClose();
     }
 

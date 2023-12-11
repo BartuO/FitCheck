@@ -22,42 +22,43 @@ const Row = ({children}) => {
 }
 
 export default function FeedPage() {
-    
-/* stuff for connecting to back end, not ready yet 
+    [photo, setPhoto] = useState();
+// stuff for connecting to back end, not ready yet 
     [isLoading, setLoading] = useState(true);
     [posts, setPosts] = useState();
 
+    console.log(photoo);
+   
     useEffect(()=>{
-        fetch("/posts").then(
-            response => response.json()
-        ).then(
-            data => {
-                setPosts(data);
-                setLoading(false);
-            }
-        )
+    try {
+        fetch("http://10.0.0.97:5000/getClothing")
+            .then(response => response.json())
+            .then(json => {setPhoto(json.img); setLoading(false);})
+        } catch (e) {console.log(e)}
     },[]);
+
     while(isLoading) return (
         <View style={{justifyContent:"center", alignItems:"center"}}>
             <ActivityIndicator/>
         </View>
     );
- */
+ 
     return (
         <SafeAreaView style ={styles.container}>
             <ScrollView contentContainerStyle = {styles.scrollView}>
                 <Row>
-                    <Listing title="Big steppington ricks" price={10000} photo={photoo}/>
-                    <Listing title="Big steppington ricks" price={5} photo={photoo}/>
+                    <Listing title="Big stepper ricks" price={10000} photo={photoo}/>
+                    <Listing title="Big stepper ricks" price={5.00} photo={photoo}/>
                 </Row>
                 <Row>
-                    <Listing title="Big steppington ricks" price={5} photo={photoo}/>
-                    <Listing title="Big steppington ricks" price={5} photo={photoo}/>
+                    <Listing title="Big stepper ricks" price={5.34} photo={photoo}/>
+                    <Listing title="Big stepper ricks" price={5} photo={photoo}/>
                 </Row>
                 <Row>
-                    <Listing title="Big steppington ricks" price={5} photo={photoo}/>
-                    <Listing title="Big steppington ricks" price={5} photo={photoo}/>
+                    <Listing title="Big stepper ricks" price={5} photo={photoo}/>
+                    <Listing title="Big stepper ricks" price={5} photo={photoo}/>
                 </Row>
+                <Image source={{uri: 'data:image/jpeg;base64,' + photo}} style={{height: 100, width: 100}}/>
             </ScrollView>
         </SafeAreaView>
     )
