@@ -1,112 +1,151 @@
-import React, {useState} from 'react';
-import { Text, View, Modal, StyleSheet, TouchableOpacity, Image, TextInput, ScrollView, KeyboardAvoidingView, Platform  } from 'react-native';
-import * as ImagePicker from "expo-image-picker";
-import placeholderImage from "../assets/profilePicPlaceholder.jpg";
+import React, { useState } from 'react';
+import {  Text, View, Modal, StyleSheet, TouchableOpacity, Image, TextInput, ScrollView} from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
+import placeholderImage from '../assets/profilePicPlaceholder.jpg';
 
 export default function ProfilePage() {
+  const [showOptions, setShowOptions] = useState(false);
+  const [image, setImage] = useState(placeholderImage);
+  const [username, setUsername] = useState('Default');
+  const [bio, setBio] = useState('Deafult');
+  const [editingUsername, setEditingUsername] = useState(false);
+  const [editingBio, setEditingBio] = useState(false);
 
-    const [showOptions, setShowOptions] = useState(false);
-    const [image, setImage] = useState(placeholderImage);
+  const userID = "0000";
+  const userEmail = "blabalbalbal@gmail.com";
+  const userMemberSince = "August 2013";
 
-    const openCamera = async () => {
-        try {
-            await ImagePicker.requestCameraPermissionsAsync();
-            let result = await ImagePicker.launchCameraAsync({
-                cameraType: ImagePicker.CameraType.back,
-                allowsEditing: true,
-                aspect: [1, 1],
-                quality: 1,
-            });
+  const openCamera = async () => {
+    try {
+      await ImagePicker.requestCameraPermissionsAsync();
+      let result = await ImagePicker.launchCameraAsync({
+        cameraType: ImagePicker.CameraType.back,
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 1,
+      });
 
-            if (!result.canceled) {
-                await saveImage(result.assets[0].uri);
-            }
-        } catch (error) {
-            // Handle error
-        }
+      if (!result.cancelled) {
+        await saveImage(result.assets[0].uri);
+      }
+    } catch (error) {
+      // Handle error
     }
+  };
 
+  const openLib = async () => {
+    try {
+      await ImagePicker.requestMediaLibraryPermissionsAsync();
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        aspect: [1, 1],
+        allowsEditing: true,
+        quality: 1,
+      });
 
-    const openLib = async () => {
-        try {
-            await ImagePicker.requestMediaLibraryPermissionsAsync();
-            let result = await ImagePicker.launchImageLibraryAsync({
-                mediaTypes: ImagePicker.MediaTypeOptions.Images,
-                aspect: [1, 1],
-                allowsEditing: true,
-                quality: 1,
-            });
-
-            if (!result.canceled) {
-                await saveImage(result.assets[0].uri);
-            }
-        } catch (error) {
-            // Handle error
-        }
+      if (!result.cancelled) {
+        await saveImage(result.assets[0].uri);
+      }
+    } catch (error) {
+      // Handle error
     }
+  };
 
-    const saveImage = async (imageUri) => {
-        try {
-            setImage({ uri: imageUri });
-            closeOptions();
-        } catch (error) {
-            // Handle error
-        }
+  const saveImage = async (imageUri) => {
+    try {
+      setImage({ uri: imageUri });
+      closeOptions();
+    } catch (error) {
+      // Handle error
     }
+  };
 
-    const openOptions = () => {
-        setShowOptions(true);
-    };
+  const openOptions = () => {
+    setShowOptions(true);
+  };
 
-    const closeOptions = () => {
-        setShowOptions(false);
-    };
+  const closeOptions = () => {
+    setShowOptions(false);
+  };
 
-    const closeModal = () => {
-        setImage(placeholderImage); 
-        setName("");
-        setDescription("");
-        setTags("");
-        onRequestClose(); 
-    }
+  const startEditingUsername = () => {
+    setEditingUsername(true);
+  };
 
-    return( 
+  const startEditingBio = () => {
+    setEditingBio(true);
+  };
+
+  const saveChanges = () => {
+    setEditingUsername(false);
+    setEditingBio(false);
+    // We save here
+  };
+
+  return (
     <View style={styles.container}>
-        <ScrollView
-            contentContainerStyle={styles.container}
-            keyboardShouldPersistTaps="handled"
-        >        
-            <TouchableOpacity style={styles.addPhotoContainer} onPress={openOptions}>
-                <Image resizeMode="cover" style={styles.img} source={image} />
+      <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
+        <TouchableOpacity style={styles.addPhotoContainer} onPress={openOptions}>
+          <Image resizeMode="cover" style={styles.img} source={image} />
+        </TouchableOpacity>
+        {editingUsername ? (
+          <TextInput
+            style={styles.editableTextBio}
+            value={username}
+            onChangeText={(text) => setUsername(text)}
+          />
+        ) : (
+          <Text style={styles.username} onPress={startEditingUsername}>
+            {username}
+          </Text>
+        )}
+        {editingBio ? (
+          <TextInput
+            style={styles.editableTextDesc}
+            value={bio}
+            onChangeText={(text) => setBio(text)}
+          />
+        ) : (
+          <Text style={styles.bio} onPress={startEditingBio}>
+            {bio}
+          </Text>
+        )}
+
+        {(editingUsername || editingBio) && (
+                <TouchableOpacity style={styles.saveButton} onPress={saveChanges}>
+                    <Text style={styles.saveButtonText}>Save Changes</Text>
+                </TouchableOpacity>
+        )}
+
+        <Text style={styles.sectionTitle}>Account Information</Text>
+        <Text style={styles.contactInfo}>UserID: {userID}</Text>
+        <Text style={styles.contactInfo}>Email: {userEmail}</Text>
+        <Text style={styles.contactInfo}>Member Since: {userMemberSince}</Text>
+
+   
+
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={showOptions}
+          onRequestClose={closeOptions}>
+          <View style={styles.optionsView}>
+            <TouchableOpacity style={styles.optionButton} onPress={() => openLib()}>
+              <Text style={styles.optionButtonText}>Choose from library</Text>
             </TouchableOpacity>
-            <Text style={styles.username}>Bartu</Text>
-            <Text style={styles.bio}> Stylist </Text>
-            <Text style={styles.sectionTitle}>Contact Information</Text>
-            <Text style={styles.contactInfo}>Email: blablabla@blabla.com</Text>
-
-            <Modal
-                animationType="slide"
-                transparent={true}
-                visible={showOptions}
-                onRequestClose={closeOptions}
-            >
-                <View style={styles.optionsView}>
-                    <TouchableOpacity style={styles.optionButton} onPress={() => openLib()}>
-                        <Text style={styles.optionButtonText}>Choose from library</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.optionButton} onPress={() => openCamera()}>
-                        <Text style={styles.optionButtonText}>Capture using camera</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.optionButton} onPress={closeOptions}>
-                        <Text style={styles.optionButtonText}>Cancel</Text>
-                    </TouchableOpacity>
-                </View>
-            </Modal>
-
-        </ScrollView>
+            <TouchableOpacity style={styles.optionButton} onPress={() => openCamera()}>
+              <Text style={styles.optionButtonText}>Capture using camera</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.optionButton} onPress={closeOptions}>
+              <Text style={styles.optionButtonText}>Cancel</Text>
+            </TouchableOpacity>
+          </View>
+        </Modal>
+      </ScrollView>
     </View>
-    );
+  );
 }
+
 const styles = StyleSheet.create({
     container: {
       flex: 1,
@@ -165,10 +204,10 @@ const styles = StyleSheet.create({
     },
 
     addPhotoContainer: {
-        marginTop: 20,
-        width: "60%",
-        height: "60%",
-        borderRadius: 180,
+        marginTop: -20,
+        width: 175,
+        height: 175,
+        borderRadius: 75,
         justifyContent: "center",
         alignItems: "center",
         overflow: "hidden"
@@ -179,5 +218,35 @@ const styles = StyleSheet.create({
         height: "80%",
         alignSelf: "center",
         borderRadius: 180,
-    }
+    },
+    editableTextBio: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        marginBottom: 10,
+        borderBottomWidth: 1,
+        borderBottomColor: 'black',
+        padding: 5,
+      },
+      editableTextDesc: {
+        fontSize: 15,
+        marginBottom: 10,
+        borderBottomWidth: 1,
+        borderBottomColor: 'black',
+        padding: 5,
+      },
+      
+      saveButton: {
+        marginTop: 10,
+        backgroundColor: '#99f2c1',
+        padding: 10,
+        borderRadius: 5,
+        alignItems: 'center',
+      },
+    
+      saveButtonText: {
+        fontSize: 16,
+        color: 'white',
+      },
+
+   
   });
