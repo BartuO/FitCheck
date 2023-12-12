@@ -1,13 +1,15 @@
 import { Text, View, StyleSheet, SafeAreaView, ScrollView, Image, ActivityIndicator } from "react-native";
 import React, {useState, useEffect} from "react";
 import photoo from "../bigsteppers.jpg"
+import { TabRouter } from "@react-navigation/routers";
 
 
 
 const Listing = ({ photo, title,price}) => {
     return (
         <View style={styles.listingContainer}>
-            <Image source={photo} style={{flex: 4, width: '100%', height: '100%'}}/>
+            <Image source={{uri: 'data:image/jpeg;base64,' + photo}} style={{flex: 4, width: '100%', height: '100%'}}/>
+
             <View style={{flex: 1, flexDirection: 'row', alignItems:'center'}}>
                 <Text style={{flex: 2}}>{title}</Text>
                 <Text style={{flex: 1, fontWeight: 'bold', textAlign:'left'}}>${price}</Text>
@@ -22,11 +24,13 @@ const Row = ({children}) => {
 }
 
 export default function FeedPage() {
+    
     [photo, setPhoto] = useState();
 // stuff for connecting to back end, not ready yet 
     [isLoading, setLoading] = useState(true);
     [posts, setPosts] = useState();
 
+    
     console.log(photoo);
    
     useEffect(()=>{
@@ -47,16 +51,16 @@ export default function FeedPage() {
         <SafeAreaView style ={styles.container}>
             <ScrollView contentContainerStyle = {styles.scrollView}>
                 <Row>
-                    <Listing title="Big stepper ricks" price={10000} photo={photoo}/>
-                    <Listing title="Big stepper ricks" price={5.00} photo={photoo}/>
+                    <Listing title="Big stepper ricks" price={10000} photo={photo}/>
+                    <Listing title="Big stepper ricks" price={5.00} photo={photo}/>
                 </Row>
                 <Row>
-                    <Listing title="Big stepper ricks" price={5.34} photo={photoo}/>
-                    <Listing title="Big stepper ricks" price={5} photo={photoo}/>
+                    <Listing title="Big stepper ricks" price={5.34} photo={photo}/>
+                    <Listing title="Big stepper ricks" price={5} photo={photo}/>
                 </Row>
                 <Row>
-                    <Listing title="Big stepper ricks" price={5} photo={photoo}/>
-                    <Listing title="Big stepper ricks" price={5} photo={photoo}/>
+                    <Listing title="Big stepper ricks" price={5} photo={photo}/>
+                    <Listing title="Big stepper ricks" price={5} photo={photo}/>
                 </Row>
                 <Image source={{uri: 'data:image/jpeg;base64,' + photo}} style={{height: 100, width: 100}}/>
             </ScrollView>
