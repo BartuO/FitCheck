@@ -13,6 +13,7 @@ export default function AddClothingScreen({ visible, onRequestClose }) {
     const [imageBase64, setBase64] = useState();
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
+    const [price, setPrice] = useState("");
     const [tags, setTags] = useState([]);
 
 
@@ -94,6 +95,7 @@ export default function AddClothingScreen({ visible, onRequestClose }) {
         setName("");
         setDescription("");
         setTags("");
+        setPrice("");
         onRequestClose(); 
     }
 
@@ -137,6 +139,17 @@ export default function AddClothingScreen({ visible, onRequestClose }) {
                             onChangeText={(text) => setDescription(text)}
                             multiline
                         />
+
+                        <TextInput
+                            style={styles.inputPrice}
+                            placeholder="Price"
+                            placeholderTextColor={"#6bd199"}
+                            value={price ? `$${price}` : ""}
+                            onChangeText={(text) => setPrice(text.replace('$', ''))}
+                            keyboardType = "numeric"
+                          
+                        />
+
                         <Tags
 
                             textInputProps={{
@@ -158,6 +171,8 @@ export default function AddClothingScreen({ visible, onRequestClose }) {
                                 </TouchableOpacity>
                             )}
                         />
+
+                        
                         
 
                         <TouchableOpacity style={styles.saveButton} onPress={saveClothingItem}>
@@ -220,7 +235,7 @@ const styles = StyleSheet.create({
         lineHeight: 20
     },
     addPhotoContainer: {
-        marginTop: 20,
+        marginTop: -6,
         width: "60%",
         height: "30%",
         borderRadius: 4,
@@ -248,6 +263,16 @@ const styles = StyleSheet.create({
         marginTop: 10,
         width: "80%",
         height: 60,
+        borderRadius: 4,
+        borderWidth: 1,
+        borderColor: "#99f2c1",
+        paddingHorizontal: 10,
+        textAlign: "center",
+    },
+    inputPrice: {
+        marginTop: 10,
+        width: 80,
+        height: 25,
         borderRadius: 4,
         borderWidth: 1,
         borderColor: "#99f2c1",
@@ -303,4 +328,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: "white",
     },
+    keyboardAvoidingView: {
+        flex: 1,
+      },
 });
