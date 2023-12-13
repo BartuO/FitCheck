@@ -10,7 +10,34 @@ const LoginPage = ({ loginUser }) => {
   const handleLogin = () => {
     // Implement your login logic here
     if (email.trim() !== '' && password.trim() !== '') {
-      loginUser(email, password);
+      try {
+          fetch(process.env.EXPO_PUBLIC_SERVER_IP+"/loginUser", {
+              method: 'POST',
+              headers: { 'Content-Type' : 'application/json'}, 
+              body: JSON.stringify({
+                "email": email,
+                "password": password,
+                }
+              )
+            }
+          )
+          .then(response => response.json())
+          .then(res => {
+            console.log(res);
+            if (!res.success) {
+               // Display an error message or take appropriate action
+              alert('incorrect email or password');
+            }
+            else {
+              loginUser(res.userID);
+            }
+          }
+          
+          )
+      } catch (e) {console.log(e)}
+
+
+
     } else {
       // Handle validation or display an error message
       // For simplicity, just showing the modal for now

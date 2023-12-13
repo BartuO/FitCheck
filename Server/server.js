@@ -38,6 +38,42 @@ app.get("/test", (req,res) => {
     }
 )
 
+app.post('/registerUser', (req,res) => {
+    const {userName, email, password} = req.body;
+    console.log("registering user :" + email)
+    db.manyOrNone('SELECT email FROM member WHERE email = $1', email).then( r => {
+        if (r.length === 0){
+            //register user
+            db.none('INSERT INTO member (email, username, password) VALUES ($1,$2,$3)', [email,userName,password]);
+            res.status(200).send({"success": true});
+        }
+        else {
+            res.status(200).send({"success": false});
+        }
+        }
+    )
+    }
+)
+
+app.post('/loginUser', (req,res) => {
+    const {email, password} = req.body;
+    console.log("loging in user :" + email)
+    db.manyOrNone('SELECT email, password, userID FROM member WHERE email = $1', email).then( r => {
+        if (r[0].password === password){
+            console.log("login success")
+            console.log(r[0])
+            res.status(200).send({"success": true, "userID": r[0].userid});
+        }
+        else {
+            console.log("login failed")
+            res.status(200).send({"success": false});
+        }
+        }
+    )
+    }
+)
+
+
 app.post('/addPost', (req, res) => {
     const {img, color, info, price, title, userID} = req.body;
     db.none("INSERT INTO POST(title, price, info, color, img, userID, isRemoved, removedBy) VALUES ($1, $2, $3, $4, $5, $6, false, null); ", 
@@ -49,13 +85,19 @@ app.post('/addPost', (req, res) => {
 )
 
 app.get('/getPosts', async (req,res) => {
-    db.many("SELECT * FROM post LIMIT 6;") 
+    db.manyOrNone("SELECT * FROM post LIMIT 40;") 
     .then(ret => res.status(200).send(ret))
     console.log("getting posts");
    /*  res.status(200).send({
         img: picture,
     }) */
 }) 
+app.post('/getUserPosts', async (req,res) => {
+     const {userID} = req.body;
+    console.log("getting posts from user: " + userID);
+    res.status(200).send( await db.manyOrNone("SELECT * FROM post WHERE userid = $1", userID));
+})
+
 app.post('/getProfile', async (req,res) => {
     const {userID} = req.body;
     console.log("getting profile for user: " + userID);

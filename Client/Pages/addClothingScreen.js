@@ -5,7 +5,7 @@ import Tags from "react-native-tags";
 import placeholderImage from "../assets/photoPlaceholder.png";
 
 
-export default function AddClothingScreen({ visible, onRequestClose }) {
+export default function AddClothingScreen({ visible, onRequestClose, id }) {
 
 
     const [showOptions, setShowOptions] = useState(false);
@@ -73,6 +73,7 @@ export default function AddClothingScreen({ visible, onRequestClose }) {
         } catch (error) {
             // Handle error
         }
+        //onRequestClose();
     }
 
     const saveClothingItem = async () => {
@@ -82,7 +83,7 @@ export default function AddClothingScreen({ visible, onRequestClose }) {
             "title": name,
             "color": "red",
             "price": price,
-            "userID": 1,
+            "userID": id,
         });
 
         try {
@@ -92,7 +93,9 @@ export default function AddClothingScreen({ visible, onRequestClose }) {
                 body: obj, 
             });
         } catch (e) {console.log(e)}
-        onRequestClose();
+        
+        
+     
     }
 
     const closeModal = () => {
@@ -180,7 +183,7 @@ export default function AddClothingScreen({ visible, onRequestClose }) {
                         
                         
 
-                        <TouchableOpacity style={styles.saveButton} onPress={saveClothingItem}>
+                        <TouchableOpacity style={styles.saveButton} onPress={async () =>{ saveClothingItem().then(closeModal())}}>
                             <Text style={styles.saveButtonText}>Save</Text>
                         </TouchableOpacity>
 
