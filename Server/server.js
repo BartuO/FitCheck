@@ -38,19 +38,23 @@ app.get("/test", (req,res) => {
     }
 )
 
-app.post('/addClothing', (req, res) => {
-    console.log("image attempted upload");
-    const {img} = req.body;
-    db.none("INSERT INTO POST(photo) VALUES ($1); ", img);
-    picture = img;
-        
+app.post('/addPost', (req, res) => {
+    const {img, color, info, price, title, userID} = req.body;
+    db.none("INSERT INTO POST(title, price, info, color, img, userID, isRemoved, removedBy) VALUES ($1, $2, $3, $4, $5, $6, false, null); ", 
+            [title,price,info, color, img, userID]
+            );
+    console.log("inserting post from user" + userID);
+    res.status(200);
     }
 )
 
-app.get('/getClothing', (req,res) => {
-    res.status(200).send({
+app.get('/getPosts', async (req,res) => {
+    db.many("SELECT * FROM post LIMIT 6;") 
+    .then(ret => res.status(200).send(ret))
+    console.log("getting posts");
+   /*  res.status(200).send({
         img: picture,
-    })
+    }) */
 }) 
 app.post('/getProfile', async (req,res) => {
     const {userID} = req.body;

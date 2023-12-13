@@ -15,3 +15,21 @@ CREATE TABLE MEMBER (
 creating new member
 INSERT INTO TABLE MEMBER (userName, bio, email) VALUES ($1, $2, $3) 
 
+
+
+CREATE TABLE POST (
+    postID      INT GENERATED ALWAYS AS IDENTITY,
+    title       VARCHAR,
+    img         VARCHAR,
+    price       REAL,
+    info        VARCHAR,
+    userID      INT,
+    isRemoved   BOOLEAN,
+    removedBy   INT,
+    color       VARCHAR,
+    PRIMARY KEY (postID),
+    FOREIGN KEY (userID) REFERENCES MEMBER(userID),
+    FOREIGN KEY (removedBy) REFERENCES MEMBER(userID)
+);
+
+

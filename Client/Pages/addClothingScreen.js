@@ -76,12 +76,17 @@ export default function AddClothingScreen({ visible, onRequestClose }) {
     }
 
     const saveClothingItem = async () => {
-        const o = {"img": imageBase64};
-        let obj = JSON.stringify(o);
+        let obj = JSON.stringify({
+            "img": imageBase64,
+            "info": description,
+            "title": name,
+            "color": "red",
+            "price": price,
+            "userID": 1,
+        });
 
         try {
-        //await fetch("http://10.0.0.97:5000/test");
-        await fetch("http://10.0.0.97:5000/addClothing", {
+        await fetch("http://10.0.0.97:5000/addPost", {
                 method: 'POST',
                 headers: { 'Content-Type' : 'application/json'},
                 body: obj, 
