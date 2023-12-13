@@ -55,6 +55,25 @@ app.post('/registerUser', (req,res) => {
     }
 )
 
+app.post('/loginUser', (req,res) => {
+    const {email, password} = req.body;
+    console.log("loging in user :" + email)
+    db.manyOrNone('SELECT email, password, userID FROM member WHERE email = $1', email).then( r => {
+        if (r[0].password === password){
+            console.log("login success")
+            console.log(r[0])
+            res.status(200).send({"success": true, "userID": r[0].userid});
+        }
+        else {
+            console.log("login failed")
+            res.status(200).send({"success": false});
+        }
+        }
+    )
+    }
+)
+
+
 app.post('/addPost', (req, res) => {
     const {img, color, info, price, title, userID} = req.body;
     db.none("INSERT INTO POST(title, price, info, color, img, userID, isRemoved, removedBy) VALUES ($1, $2, $3, $4, $5, $6, false, null); ", 

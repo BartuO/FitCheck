@@ -32,7 +32,7 @@ export default function FeedPage({route}) {
                 }
             )
         } catch (e) {console.log(e)}
-        },[]
+        },[route]
     );
 
     const Listing = ({ photo, title,price, index}) => {

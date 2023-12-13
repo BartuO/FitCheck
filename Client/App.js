@@ -20,8 +20,9 @@ export default function App() {
     const loginUser = (id) => {
     if (1) {
       // check if this user id exist in db here
+      console.log(id)
       setId(id);
-      setLogin(false);
+      setLogin(true);
     }
   }
 
