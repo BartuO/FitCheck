@@ -86,7 +86,7 @@ export default function AddClothingScreen({ visible, onRequestClose }) {
         });
 
         try {
-        await fetch("http://10.0.0.97:5000/addPost", {
+        await fetch(process.env.EXPO_PUBLIC_SERVER_IP+"/addPost", {
                 method: 'POST',
                 headers: { 'Content-Type' : 'application/json'},
                 body: obj, 
