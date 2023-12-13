@@ -14,7 +14,7 @@ import LoginPage from "./Pages/loginPage"
 const tab = createBottomTabNavigator();
 export default function App() {
   const [id, setId] = useState(2);
-  const [isLoggedin, setLogin] = useState(true);
+  const [isLoggedin, setLogin] = useState(false);
   const [inp, setInp] = useState("enter your userID")
 
     const loginUser = (id) => {

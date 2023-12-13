@@ -38,6 +38,23 @@ app.get("/test", (req,res) => {
     }
 )
 
+app.post('/registerUser', (req,res) => {
+    const {userName, email, password} = req.body;
+    console.log("registering user :" + email)
+    db.manyOrNone('SELECT email FROM member WHERE email = $1', email).then( r => {
+        if (r.length === 0){
+            //register user
+            db.none('INSERT INTO member (email, username, password) VALUES ($1,$2,$3)', [email,userName,password]);
+            res.status(200).send({"success": true});
+        }
+        else {
+            res.status(200).send({"success": false});
+        }
+        }
+    )
+    }
+)
+
 app.post('/addPost', (req, res) => {
     const {img, color, info, price, title, userID} = req.body;
     db.none("INSERT INTO POST(title, price, info, color, img, userID, isRemoved, removedBy) VALUES ($1, $2, $3, $4, $5, $6, false, null); ", 

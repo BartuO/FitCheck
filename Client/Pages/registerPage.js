@@ -7,19 +7,43 @@ const RegisterPage = ({ onCloseModal }) => {
   const [password, setPassword] = useState('');
 
   const handleRegister = () => {
-    if (isValidEmail(email)) {
         // Proceed with registration logic
         // ...
-      } else {
-        // Display an error message or take appropriate action
-        alert('Please enter a valid email address.');
-    }
+        try {
+          fetch(process.env.EXPO_PUBLIC_SERVER_IP+"/registerUser", {
+              method: 'POST',
+              headers: { 'Content-Type' : 'application/json'}, 
+              body: JSON.stringify({
+                "email": email,
+                "password": password,
+                "userName": username
+                }
+              )
+            }
+          )
+          .then(response => response.json())
+          .then(res => {
+            console.log(res);
+            if (!res.success) {
+               // Display an error message or take appropriate action
+              alert('Please enter a valid email address.');
+            }
+            else {
+              onCloseModal();
+            }
+          }
+          
+          )
+      } catch (e) {console.log(e)}
+     
+       
+    
 
     
     // Implement your registration logic here
     // You might want to add validation and actual registration functionality
     // For simplicity, just closing the modal for now
-    onCloseModal();
+    //onCloseModal();
   };
 
   const isValidEmail = (email) => {

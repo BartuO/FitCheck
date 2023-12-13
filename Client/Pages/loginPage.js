@@ -10,7 +10,11 @@ const LoginPage = ({ loginUser }) => {
   const handleLogin = () => {
     // Implement your login logic here
     if (email.trim() !== '' && password.trim() !== '') {
+      
+
+      
       loginUser(email, password);
+
     } else {
       // Handle validation or display an error message
       // For simplicity, just showing the modal for now
