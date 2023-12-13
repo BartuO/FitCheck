@@ -49,13 +49,19 @@ app.post('/addPost', (req, res) => {
 )
 
 app.get('/getPosts', async (req,res) => {
-    db.many("SELECT * FROM post LIMIT 6;") 
+    db.manyOrNone("SELECT * FROM post LIMIT 40;") 
     .then(ret => res.status(200).send(ret))
     console.log("getting posts");
    /*  res.status(200).send({
         img: picture,
     }) */
 }) 
+app.post('/getUserPosts', async (req,res) => {
+     const {userID} = req.body;
+    console.log("getting posts from user: " + userID);
+    res.status(200).send( await db.manyOrNone("SELECT * FROM post WHERE userid = $1", userID));
+})
+
 app.post('/getProfile', async (req,res) => {
     const {userID} = req.body;
     console.log("getting profile for user: " + userID);

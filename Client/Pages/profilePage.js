@@ -1,20 +1,22 @@
 import React, { useEffect, useState } from 'react';
-import {  Text, View, Modal, StyleSheet, TouchableOpacity, Image, TextInput, ScrollView} from 'react-native';
+import {  Text, View, Modal, StyleSheet, TouchableOpacity, Image, TextInput, ScrollView, ActivityIndicator} from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import placeholderImage from '../assets/profilePicPlaceholder.js';
 
-export default function ProfilePage() {
- 
-
+export default function ProfilePage({route}) {
+  
+  const {params} = route;
+  const {id} = params;
   const [showOptions, setShowOptions] = useState(false);
   const [image, setImage] = useState(placeholderImage.img);
   const [username, setUsername] = useState('Default');
   const [bio, setBio] = useState('Deafult');
   const [userEmail, setEmail] = useState("email");
-  const [userID, setID] = useState(-1);
+  const [userID, setID] = useState(id);
   //const [userMemberSince, setDate] = useState(0);
   const [editingUsername, setEditingUsername] = useState(false);
   const [editingBio, setEditingBio] = useState(false);
+  const [isLoading, setLoading] = useState(true);
 
  
 
@@ -26,7 +28,7 @@ export default function ProfilePage() {
       fetch(process.env.EXPO_PUBLIC_SERVER_IP+"/getProfile", {
         method: 'POST',
         headers: { 'Content-Type' : 'application/json'}, 
-        body: JSON.stringify({"userID": 1})
+        body: JSON.stringify({"userID": userID})
         }
       )
       .then(response => response.json())
@@ -36,6 +38,7 @@ export default function ProfilePage() {
         if (json.profilepic != null ) setImage(json.profilepic);
         setID(json.userid);
         setEmail(json.email);
+        setLoading(false);
         }
       )
     } catch {(e) => {console.log(e)}}
@@ -129,8 +132,17 @@ export default function ProfilePage() {
         body: obj  
       })
     } catch {(e) => {console.log(e)}}
+    setShowOptions(false);
   };
 
+  while (isLoading) return (
+    <View style={{ justifyContent: "center", alignItems: "center" }}>
+      <ActivityIndicator />
+    </View>
+  );
+
+ 
+    
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">

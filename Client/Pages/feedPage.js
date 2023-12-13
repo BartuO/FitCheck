@@ -9,63 +9,26 @@ import ItemDetails from "./itemDetails";
 export default function FeedPage({route}) {
 
     const {params} = route;
-    
     const {id} = params;
+
     const [isDetailsVisible, setDetailsVisible] = useState(false);
+    
     [photo, setPhoto] = useState(photoo);
     [itemName, setName] = useState("Jacket");
     [price, setPrice] = useState("0.987");
     [description, setDescription] = useState("HELO HELLO THIS IS HELLO HELLO IS DESCRIPTION I AM HELLO THIS ITEM IS HELLO");
-    [tags, setTags] = useState(["cool", "awesome", "loveit", "wontsell"]);
-// stuff for connecting to back end, not ready yet 
     [isLoading, setLoading] = useState(true);
     [posts, setPosts] = useState([]);
+    [tags, setTags] = useState(["cool", "awesome", "loveit", "wontsell"]);
     [isAdmin, setAdmin] = useState(false);
-    [rows, setRows] = useState([]);
-/* 
-    const generateRows = (posts) => {
-        console.log(posts.length);
-        let rowarr = [];
-        const numRows = Math.ceil(posts.length / 2);
-        for (let i = 0; i < numRows ; i++){
-            if ( i === numRows - 1 ) {
-                if (posts.length % 2 === 1) {
-                    const post = posts[i * 2]
-                    rowarr.push(
-                    <Row key={i}>
-                        <Listing title={post.title} price={post.price} photo={post.photo} />
-                        <View style={{flex:1, margin: 5}}/>
-                    </Row>
-                    );
-                }
-            }
-            else {
-                const post1 = posts[i * 2];
-                const post2 = posts[i * 2 + 1];
-                rows.push(
-                    <Row key={i}>
-                        <Listing title={post1.title} price={post1.price} photo={post1.photo} />
-                        <Listing title={post2.title} price={post2.price} photo={post2.photo} />
-                    </Row>
-                );
-
-            }
-        }
-        setRows(rowarr);
-    }
-     */
-
+ 
     useEffect(()=>{
         try {
         fetch(process.env.EXPO_PUBLIC_SERVER_IP+"/getPosts")
             .then(response => response.json())
             .then(postss => {
-                //posts is an array of json objects each representing a post
-
-                //rows = generateRows(posts);
                 setPosts(postss);
                 setLoading(false);
-              
                 }
             )
         } catch (e) {console.log(e)}
@@ -84,10 +47,6 @@ export default function FeedPage({route}) {
         )
     }
 
-    const Row = ({children}) => {
-    
-        return (<View style={styles.row} >{children}</View>);
-    }
 
     const openDetails = (index) => {
         const post = posts[index];
@@ -103,28 +62,15 @@ export default function FeedPage({route}) {
         setDetailsVisible(false);
     };
 
-    // while(isLoading) return (
-    //     <View style={{justifyContent:"center", alignItems:"center"}}>
-    //         <ActivityIndicator/>
-    //     </View>
-    // );
+    while(isLoading) return (
+        <View style={{justifyContent:"center", alignItems:"center"}}>
+         <ActivityIndicator/>
+       </View>
+    );
  
     return (
         <SafeAreaView style ={styles.container}>
             <ScrollView contentContainerStyle = {styles.scrollView}>
-                {/* <Row>
-                    <Listing title={itemName} price={price} photo={photo}/>
-                    <Listing title={itemName} price={price} photo={photo}/>
-                </Row>
-                <Row>
-                    <Listing title={itemName} price={price} photo={photo}/>
-                    <Listing title={itemName} price={price} photo={photo}/>
-                </Row>
-                <Row>
-                    <Listing title={itemName} price={price} photo={photoo}/>
-                    <View style={{flex:1, margin: 5}}></View>
-                </Row>
-                <Image source={{uri: 'data:image/jpeg;base64,' + photo}} style={{height: 100, width: 100}}/> */}
                 {posts.map((p, index) => <Listing key={index} index={index} title={p.title} price={p.price} photo={p.img}/>)}
             </ScrollView>
             <ItemDetails
