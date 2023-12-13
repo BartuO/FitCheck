@@ -1,19 +1,45 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {  Text, View, Modal, StyleSheet, TouchableOpacity, Image, TextInput, ScrollView} from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-import placeholderImage from '../assets/profilePicPlaceholder.jpg';
+import placeholderImage from '../assets/profilePicPlaceholder.js';
 
 export default function ProfilePage() {
+ 
+
   const [showOptions, setShowOptions] = useState(false);
-  const [image, setImage] = useState(placeholderImage);
+  const [image, setImage] = useState(placeholderImage.img);
   const [username, setUsername] = useState('Default');
   const [bio, setBio] = useState('Deafult');
+  const [userEmail, setEmail] = useState("email");
+  const [userID, setID] = useState(-1);
+  //const [userMemberSince, setDate] = useState(0);
   const [editingUsername, setEditingUsername] = useState(false);
   const [editingBio, setEditingBio] = useState(false);
 
-  const userID = "0000";
-  const userEmail = "blabalbalbal@gmail.com";
-  const userMemberSince = "August 2013";
+ 
+
+  let userMemberSince = "August 2013";
+
+  useEffect(()=>{
+    try{ 
+
+      fetch("http://10.0.0.97:5000/getProfile", {
+        method: 'POST',
+        headers: { 'Content-Type' : 'application/json'}, 
+        body: JSON.stringify({"userID": 1})
+        }
+      )
+      .then(response => response.json())
+      .then(json => {
+        setBio(json.bio);
+        setUsername(json.username);
+        if (json.profilepic != null ) setImage(json.profilepic);
+        setID(json.userid);
+        setEmail(json.email);
+        }
+      )
+    } catch {(e) => {console.log(e)}}
+  },[])
 
   const openCamera = async () => {
     try {
@@ -23,10 +49,11 @@ export default function ProfilePage() {
         allowsEditing: true,
         aspect: [1, 1],
         quality: 1,
+        base64: true
       });
 
       if (!result.cancelled) {
-        await saveImage(result.assets[0].uri);
+        await saveImage(result.assets[0].base64);
       }
     } catch (error) {
       // Handle error
@@ -41,19 +68,27 @@ export default function ProfilePage() {
         aspect: [1, 1],
         allowsEditing: true,
         quality: 1,
+        base64: true,
       });
 
       if (!result.cancelled) {
-        await saveImage(result.assets[0].uri);
+        await saveImage(result.assets[0].base64);
       }
     } catch (error) {
       // Handle error
     }
   };
 
-  const saveImage = async (imageUri) => {
+  const saveImage = async (base64img) => {
     try {
-      setImage({ uri: imageUri });
+      setImage(base64img);
+      fetch("http://10.0.0.97:5000/updateProfilePic", {
+        method: 'POST',
+        headers: { 'Content-Type' : 'application/json'},
+        body: JSON.stringify({"userID": 1, "image": base64img}),
+        }
+      )
+
       closeOptions();
     } catch (error) {
       // Handle error
@@ -80,13 +115,27 @@ export default function ProfilePage() {
     setEditingUsername(false);
     setEditingBio(false);
     // We save here
+    try {
+      const obj = JSON.stringify({
+          "userID": userID,
+          "userName": username,
+          "bio": bio,
+          "image": image
+          }
+        ); 
+      fetch("http://10.0.0.97:5000/updateProfile", { 
+        method: 'POST',
+        headers: { 'Content-Type' : 'application/json'},
+        body: obj  
+      })
+    } catch {(e) => {console.log(e)}}
   };
 
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
         <TouchableOpacity style={styles.addPhotoContainer} onPress={openOptions}>
-          <Image resizeMode="cover" style={styles.img} source={image} />
+          <Image resizeMode="cover" style={styles.img} source={{uri: 'data:image/jpeg;base64,' + image}} />
         </TouchableOpacity>
         {editingUsername ? (
           <TextInput

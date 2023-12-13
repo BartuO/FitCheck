@@ -6,7 +6,7 @@ export default function ItemDetails({ isOpen, onClose, photo, name, price, descr
     return null;
   }
 
-  const photoUri = Image.resolveAssetSource(photo).uri;
+
   
   //console.log(photoUri);
 
@@ -23,7 +23,7 @@ export default function ItemDetails({ isOpen, onClose, photo, name, price, descr
                 <Text style={styles.closeButtonText}>Close</Text>
             </TouchableOpacity>
 
-            <Image source={{ uri: photoUri }} style={styles.itemImage} />
+            <Image source={{uri: 'data:image/jpeg;base64,' + photo}} style={styles.itemImage} />
             
 
             <Text style={styles.title}>{name}</Text>
