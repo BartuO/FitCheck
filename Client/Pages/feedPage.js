@@ -6,12 +6,12 @@ import { useNavigation } from '@react-navigation/native';
 import ItemDetails from "./itemDetails";
 
 
-export default function FeedPage() {
+export default function FeedPage({route}) {
 
-   
+    const {params} = route;
+    
+    const {id} = params;
     const [isDetailsVisible, setDetailsVisible] = useState(false);
-
- 
     [photo, setPhoto] = useState(photoo);
     [itemName, setName] = useState("Jacket");
     [price, setPrice] = useState("0.987");
@@ -57,7 +57,7 @@ export default function FeedPage() {
 
     useEffect(()=>{
         try {
-        fetch("http://10.0.0.97:5000/getPosts")
+        fetch(process.env.EXPO_PUBLIC_SERVER_IP+"/getPosts")
             .then(response => response.json())
             .then(postss => {
                 //posts is an array of json objects each representing a post

@@ -23,7 +23,7 @@ export default function ProfilePage() {
   useEffect(()=>{
     try{ 
 
-      fetch("http://10.0.0.97:5000/getProfile", {
+      fetch(process.env.EXPO_PUBLIC_SERVER_IP+"/getProfile", {
         method: 'POST',
         headers: { 'Content-Type' : 'application/json'}, 
         body: JSON.stringify({"userID": 1})
@@ -82,7 +82,7 @@ export default function ProfilePage() {
   const saveImage = async (base64img) => {
     try {
       setImage(base64img);
-      fetch("http://10.0.0.97:5000/updateProfilePic", {
+      fetch(process.env.EXPO_PUBLIC_SERVER_IP+"/updateProfilePic", {
         method: 'POST',
         headers: { 'Content-Type' : 'application/json'},
         body: JSON.stringify({"userID": 1, "image": base64img}),
@@ -123,7 +123,7 @@ export default function ProfilePage() {
           "image": image
           }
         ); 
-      fetch("http://10.0.0.97:5000/updateProfile", { 
+      fetch(process.env.EXPO_PUBLIC_SERVER_IP+"/updateProfile", { 
         method: 'POST',
         headers: { 'Content-Type' : 'application/json'},
         body: obj  

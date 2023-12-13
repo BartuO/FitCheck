@@ -12,7 +12,7 @@ import WardrobePage from './Pages/wardrobePage';
  
 const tab = createBottomTabNavigator();
 export default function App() {
-  const [id, setId] = useState(0);
+  const [id, setId] = useState(1);
   const [isLoggedin, setLogin] = useState(true);
   const [inp, setInp] = useState("enter your userID")
 
@@ -35,7 +35,7 @@ export default function App() {
   return (
     <NavigationContainer>
       <tab.Navigator>
-        <tab.Screen name='My Feed'  component={FeedPage} initialParams={{id: id}}/>
+        <tab.Screen name='My Feed' component={FeedPage} initialParams={{id: id}}/>
         <tab.Screen name='My Wardrobe' component={WardrobePage} />
         <tab.Screen name="My Profile" component={ProfilePage} />
       </tab.Navigator>
