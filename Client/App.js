@@ -7,30 +7,36 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import  ProfilePage  from "./Pages/profilePage";
 import  FeedPage  from "./Pages/feedPage";
 import WardrobePage from './Pages/wardrobePage';
+import LoginPage from "./Pages/loginPage"
 
 
  
 const tab = createBottomTabNavigator();
 export default function App() {
-  const [id, setId] = useState(0);
-  const [isLoggedin, setLogin] = useState(true);
-  const [inp, setInp] = useState("enter your userID")
+  const [id, setId] = useState(1);
+  const [isLoggedin, setLogin] = useState(false);
+  const [inp, setInp] = useState("enter your userID");
 
     const loginUser = (id) => {
     if (1) {
       // check if this user id exist in db here
       setId(id);
-      setLogin(true);
+      setLogin(false);
     }
   }
+
+  
   //login page
-  while (!isLoggedin) return (
-    <SafeAreaView style={{flex: 1, justifyContent:'center', alignItems:'center'}}>
-    <Text>Login Screen</Text>
-    <TextInput style={styles.input} onChangeText={newInp => setInp(newInp)} value={inp}/>
-    <Button onPress={loginUser} title='Login'/>
+  if (!isLoggedin) {
+    return (
+      <SafeAreaView style={styles.container}>
+      {/* Use LoginPage or RegisterPage based on your logic */}
+        <LoginPage loginUser={loginUser} />
+        {/* <RegisterPage registerUser={registerUser} /> */}
     </SafeAreaView>
-  )
+    );
+  }
+
 
   return (
     <NavigationContainer>
@@ -57,4 +63,5 @@ const styles = StyleSheet.create({
     margin: 12,
     borderWidth: 1,
   },
-});
+}
+);
